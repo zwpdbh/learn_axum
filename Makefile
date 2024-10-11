@@ -7,3 +7,6 @@ run_client:
 
 test_login:
 	cargo watch -q -c -w tests/ -x "test --test routes_login -- --nocapture"
+
+test_crud_ticket:
+	cargo watch -q -c -w tests/ -x "test --test crud_tickets -- --nocapture"

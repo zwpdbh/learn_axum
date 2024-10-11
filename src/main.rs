@@ -10,6 +10,7 @@ use axum::{
     routing::{get, get_service, Route},
     Router,
 };
+use model::ModelController;
 use serde::Deserialize;
 use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
@@ -20,13 +21,17 @@ struct HelloParams {
 }
 
 mod error;
+mod model;
 mod web;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
+    let mc = ModelController::new().await?;
+
     let routes_all = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
+        .nest("/api", web::routes_tickets::routes(mc.clone()))
         .layer(middleware::map_response(main_response_mapper))
         // layer get executed from bottom to top
         .layer(CookieManagerLayer::new())
@@ -38,6 +43,8 @@ async fn main() {
         .serve(routes_all.into_make_service())
         .await
         .unwrap();
+
+    Ok(())
 }
 
 /// Handle client and server error seperately
