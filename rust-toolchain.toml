@@ -1,0 +1,4 @@
+# check https://rust-lang.github.io/rustup/concepts/toolchains.html
+[toolchain]
+channel = "stable"
+components = ["rustfmt", "clippy"]

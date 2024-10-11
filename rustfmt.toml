@@ -1,0 +1,5 @@
+# setup rustfmt: https://rust-lang.github.io/rustfmt/?version=master&search=
+edition = "2021"
+newline_style = "Unix"
+reorder_imports = true
+tab_spaces = 4
