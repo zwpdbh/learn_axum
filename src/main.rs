@@ -5,7 +5,8 @@ use std::net::SocketAddr;
 
 use axum::{
     extract::{Path, Query},
-    response::{Html, IntoResponse},
+    middleware,
+    response::{Html, IntoResponse, Response},
     routing::{get, get_service, Route},
     Router,
 };
@@ -25,6 +26,7 @@ async fn main() {
     let routes_all = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
+        .layer(middleware::map_response(main_response_mapper))
         .fallback_service(routes_statics());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
@@ -33,6 +35,13 @@ async fn main() {
         .serve(routes_all.into_make_service())
         .await
         .unwrap();
+}
+
+/// Handle client and server error seperately
+async fn main_response_mapper(res: Response) -> Response {
+    println!("->> {:<12} - main_response_mapper", "RES_MAPPER");
+    println!();
+    res
 }
 
 fn routes_statics() -> Router {
