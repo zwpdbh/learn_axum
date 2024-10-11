@@ -19,7 +19,7 @@
 
 ## Advanced 
 
-- Custom Middelware Auth `mw_auth`
+- Custom Middelware Auth `mw_auth` (vido: 40:38)
 - Custom Extractor `ctx`
 - Ctx from REST to CRUD Model API
 - Ctx middleware resolver (optimization)
