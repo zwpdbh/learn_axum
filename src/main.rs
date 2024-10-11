@@ -17,16 +17,20 @@ struct HelloParams {
 
 #[tokio::main]
 async fn main() {
-    let routers_hello = Router::new()
-        .route("/hello", get(handler_hello))
-        .route("/hello2/:name", get(handler_hello2));
+    let routes_all = Router::new().merge(routes_hello());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
     println!("->> Listening on {addr}\n");
     axum_server::bind(addr)
-        .serve(routers_hello.into_make_service())
+        .serve(routes_all.into_make_service())
         .await
         .unwrap();
+}
+
+fn routes_hello() -> Router {
+    Router::new()
+        .route("/hello", get(handler_hello))
+        .route("/hello2/:name", get(handler_hello2))
 }
 
 // For /hello?name=Jen
