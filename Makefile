@@ -4,3 +4,6 @@ run_server:
 
 run_client:
 	cargo watch -q -c -w tests/ -x "test -- --nocapture"
+
+test_login:
+	cargo watch -q -c -w tests/ -x "test --test routes_login -- --nocapture"

@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+pub use self::error::{Error, Result};
 use std::net::SocketAddr;
 
 use axum::{
@@ -17,11 +18,13 @@ struct HelloParams {
 }
 
 mod error;
+mod web;
 
 #[tokio::main]
 async fn main() {
     let routes_all = Router::new()
         .merge(routes_hello())
+        .merge(web::routes_login::routes())
         .fallback_service(routes_statics());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
