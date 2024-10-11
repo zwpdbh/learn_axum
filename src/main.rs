@@ -11,6 +11,7 @@ use axum::{
     Router,
 };
 use serde::Deserialize;
+use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
 
 #[derive(Debug, Deserialize)]
@@ -27,6 +28,8 @@ async fn main() {
         .merge(routes_hello())
         .merge(web::routes_login::routes())
         .layer(middleware::map_response(main_response_mapper))
+        // layer get executed from bottom to top
+        .layer(CookieManagerLayer::new())
         .fallback_service(routes_statics());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
