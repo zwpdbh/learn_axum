@@ -25,7 +25,10 @@
   - Use this to protect certain API, like create ticket and delete ticket.
   - parse token from cookie
 - Custom Extractor `ctx`
+  - Created a general context extract for header. 
 - Ctx from REST to CRUD Model API
+  - Use ctx for privileges and access control for web layer and model layer.
+  - Use ctx extractor to extract user id for create and delete ticket API.
 - Ctx middleware resolver (optimization)
 - Advanced Error Handling (Client vs Server)
 - Server Logging
