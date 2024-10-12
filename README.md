@@ -23,6 +23,7 @@
 
 - Custom Middelware Auth `mw_auth` (vido: 40:38)
   - Use this to protect certain API, like create ticket and delete ticket.
+  - parse token from cookie
 - Custom Extractor `ctx`
 - Ctx from REST to CRUD Model API
 - Ctx middleware resolver (optimization)
