@@ -29,7 +29,8 @@
 - Ctx from REST to CRUD Model API
   - Use ctx for privileges and access control for web layer and model layer.
   - Use ctx extractor to extract user id for create and delete ticket API.
-- Ctx middleware resolver (optimization)
+- Ctx middleware resolver (optimization) -- from (58:25) to (1:04:40)
+  - Ctx extractor called two time problem. One from require auth middleware, another from create ticket.
 - Advanced Error Handling (Client vs Server)
 - Server Logging
 
