@@ -12,14 +12,17 @@
 ## Intermediate
 
 - First API Login (with frist error)
+  - Add login API.
 - First Response Mapper Layer
 - Login with cookie
+  - After login, we should add token into the cookie.
 - Mock Model for CRUD
 - REST API
 
 ## Advanced 
 
 - Custom Middelware Auth `mw_auth` (vido: 40:38)
+  - Use this to protect certain API, like create ticket and delete ticket.
 - Custom Extractor `ctx`
 - Ctx from REST to CRUD Model API
 - Ctx middleware resolver (optimization)

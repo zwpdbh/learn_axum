@@ -28,10 +28,14 @@ mod web;
 async fn main() -> Result<()> {
     let mc = ModelController::new().await?;
 
+    let routes_api = web::routes_tickets::routes(mc.clone())
+        // when we want to apply middleware to only some route, use route_layer
+        .route_layer(middleware::from_fn(web::mw_auth::mw_require_auth));
+
     let routes_all = Router::new()
         .merge(routes_hello())
         .merge(web::routes_login::routes())
-        .nest("/api", web::routes_tickets::routes(mc.clone()))
+        .nest("/api", routes_api)
         .layer(middleware::map_response(main_response_mapper))
         // layer get executed from bottom to top
         .layer(CookieManagerLayer::new())
