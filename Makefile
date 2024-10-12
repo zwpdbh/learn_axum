@@ -11,5 +11,8 @@ test_login:
 test_crud_ticket:
 	cargo watch -q -c -w tests/ -x "test --test crud_tickets -- --nocapture"
 
-test_auth_middleware:
-	cargo watch -q -c -w tests/ -x "test --test auth_middleware -- --nocapture"
+test_auth_middleware_succeed:
+	cargo watch -q -c -w tests/ -x "test --test auth_middleware_succeed -- --nocapture"
+
+test_auth_middleware_failed:
+	cargo watch -q -c -w tests/ -x "test --test auth_middleware_failed -- --nocapture"

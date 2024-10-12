@@ -1,5 +1,6 @@
 #![allow(unused)]
 
+pub use self::ctx::Ctx;
 pub use self::error::{Error, Result};
 use std::net::SocketAddr;
 
@@ -20,6 +21,7 @@ struct HelloParams {
     name: Option<String>,
 }
 
+mod ctx;
 mod error;
 mod model;
 mod web;
