@@ -33,6 +33,8 @@
   - Ctx extractor called two time problem. One from require auth middleware, another from create ticket.
 - Advanced Error Handling (Client vs Server)
 - Server Logging
+  - This is not tracing. 
+  - This is request log line: one log line per request with error or with other information.
 
 ## References 
 

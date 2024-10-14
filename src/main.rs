@@ -26,6 +26,7 @@ struct HelloParams {
 
 mod ctx;
 mod error;
+mod log;
 mod model;
 mod web;
 
