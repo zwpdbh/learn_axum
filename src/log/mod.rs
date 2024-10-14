@@ -6,7 +6,10 @@ use serde_json::{json, Value};
 use serde_with::skip_serializing_none;
 use uuid::Uuid;
 
-use crate::{error::ClientError, Ctx, Error, Result};
+use crate::{
+    web::{self, ClientError},
+    Ctx, Result,
+};
 
 #[skip_serializing_none]
 #[derive(Serialize)]
@@ -32,7 +35,7 @@ pub async fn log_request(
     req_method: Method,
     uri: Uri,
     ctx: Option<Ctx>,
-    service_error: Option<&Error>,
+    service_error: Option<&web::Error>,
     client_error: Option<ClientError>,
 ) -> Result<()> {
     let timestamp = SystemTime::now()

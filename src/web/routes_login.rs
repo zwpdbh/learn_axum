@@ -3,7 +3,7 @@ use serde::Deserialize;
 use serde_json::{json, Value};
 use tower_cookies::{Cookie, Cookies};
 
-use crate::{web, Error, Result};
+use crate::web::{self, Error, Result};
 
 pub fn routes() -> Router {
     Router::new().route("/api/login", post(api_login))
