@@ -4,6 +4,7 @@ pub use self::ctx::Ctx;
 pub use self::error::{Error, Result};
 use std::net::SocketAddr;
 
+use axum::Json;
 use axum::{
     extract::{Path, Query},
     middleware,
@@ -13,8 +14,10 @@ use axum::{
 };
 use model::ModelController;
 use serde::Deserialize;
+use serde_json::json;
 use tower_cookies::CookieManagerLayer;
 use tower_http::services::ServeDir;
+use uuid::Uuid;
 
 #[derive(Debug, Deserialize)]
 struct HelloParams {
@@ -60,8 +63,28 @@ async fn main() -> Result<()> {
 /// Handle client and server error seperately
 async fn main_response_mapper(res: Response) -> Response {
     println!("->> {:<12} - main_response_mapper", "RES_MAPPER");
-    println!();
-    res
+    let uuid = Uuid::new_v4();
+
+    // Get the eventual response error.
+    let service_error = res.extensions().get::<Error>();
+    let client_status_error = service_error.map(|se| se.client_status_and_error());
+    let error_response = client_status_error.map(|(status_code, client_error)| {
+        let client_error_body = json!({
+            "error": {
+                "type": client_error,
+                "req_uuid": uuid.to_string(),
+            }
+        });
+        println!("->> client_error_body: {client_error_body}");
+
+        // Build the new resonse from the client_error_body
+        (status_code, Json(client_error_body)).into_response()
+    });
+
+    // TODO:: Build and log the server log line.
+    println!("->> server log line - {uuid} - Error: {service_error:?}");
+
+    error_response.unwrap_or(res)
 }
 
 fn routes_statics() -> Router {
