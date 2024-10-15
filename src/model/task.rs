@@ -39,3 +39,41 @@ impl TaskBmc {
 }
 
 // endregion:   --- TaskBmc (BackendModelController)
+
+#[cfg(test)]
+mod tests {
+    #![allow(unused)]
+    use crate::_dev_utils;
+
+    use super::*;
+    use anyhow::{Ok, Result};
+
+    #[tokio::test]
+    async fn test_create_ok() -> Result<()> {
+        let mm = _dev_utils::init_test().await;
+        let ctx = Ctx::root_ctx();
+        let fx_title = "test_create_ok title";
+
+        let task_c = TaskForCreate {
+            title: fx_title.to_string(),
+        };
+
+        let id = TaskBmc::create(&ctx, &mm, task_c).await?;
+
+        let (title,): (String,) = sqlx::query_as("SELECT title from task where id = $1")
+            .bind(id)
+            .fetch_one(mm.db())
+            .await?;
+
+        assert_eq!(title, fx_title);
+
+        let count = sqlx::query("DELETE from task WHERE id = $1")
+            .bind(id)
+            .execute(mm.db())
+            .await?
+            .rows_affected();
+
+        assert_eq!(1, count);
+        Ok(())
+    }
+}
