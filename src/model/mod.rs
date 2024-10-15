@@ -38,4 +38,9 @@ impl ModelManager {
         // FIXME - TBC
         Ok(ModelManager { db })
     }
+
+    // Constrain only the model layer could get the sqlx db pool reference.
+    pub(in crate::model) fn db(&self) -> &Db {
+        &self.db
+    }
 }
