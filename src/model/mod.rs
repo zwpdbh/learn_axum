@@ -20,6 +20,7 @@
 
 mod error;
 mod store;
+pub mod task;
 
 pub use self::error::{Error, Result};
 
