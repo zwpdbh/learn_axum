@@ -47,7 +47,9 @@ mod tests {
 
     use super::*;
     use anyhow::{Ok, Result};
+    use serial_test::serial;
 
+    #[serial]
     #[tokio::test]
     async fn test_create_ok() -> Result<()> {
         let mm = _dev_utils::init_test().await;
