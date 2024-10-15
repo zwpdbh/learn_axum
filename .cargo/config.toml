@@ -8,5 +8,8 @@ RUST_LOG = "learn_axum"
 # For cargo commands only
 # For deployed env, should managed by container
 
+## Secrete for k8s
+SERVICE_DB_URL = "postgres://app_user:dev_only_pwd@localhost/app_db"
+
 ## Config Map
 SERVICE_WEB_FOLDER = "web-folder/"
