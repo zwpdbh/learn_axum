@@ -1,5 +1,5 @@
 use crate::model::ModelManager;
-use crate::model::Result;
+use crate::model::{Error, Result};
 use crate::Ctx;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
@@ -35,6 +35,17 @@ impl TaskBmc {
                 .await?;
 
         Ok(id)
+    }
+
+    pub async fn get(_ctx: &Ctx, mm: &ModelManager, id: i64) -> Result<Task> {
+        let db = mm.db();
+        let task: Task = sqlx::query_as("select * from task where id = $1")
+            .bind(id)
+            .fetch_optional(db)
+            .await?
+            .ok_or(Error::EntityNotFound { entity: "task", id })?;
+
+        Ok(task)
     }
 }
 
