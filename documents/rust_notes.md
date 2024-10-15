@@ -12,6 +12,3 @@
   - First, express model/store Error as an enum variant case for model Error.
   - Then, `impl From<store::Error> for Error` for model Error.
 
-## Understand the decouple of web layer and model layer.
-
-- This is done via context(Ctx)
