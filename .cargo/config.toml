@@ -1,0 +1,5 @@
+# Env variables set for all `cargo ... ` commands.
+[env]
+
+# Scope down tracing, to filter out external lib tracing 
+RUST_LOG = "learn_axum"

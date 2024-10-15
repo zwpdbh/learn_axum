@@ -6,6 +6,8 @@ use crate::model::ModelManager;
 use crate::web::mw_res_map::mw_reponse_map;
 use axum::{middleware, Router};
 use tower_cookies::CookieManagerLayer;
+use tracing::info;
+use tracing_subscriber::EnvFilter;
 use web::routes_static;
 
 mod ctx;
@@ -16,6 +18,12 @@ mod web;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    tracing_subscriber::fmt()
+        .without_time()
+        .with_target(false)
+        .with_env_filter(EnvFilter::from_default_env())
+        .init();
+
     // Initialize ModelManager.
     let mm = ModelManager::new().await?;
 
@@ -34,7 +42,7 @@ async fn main() -> Result<()> {
         .fallback_service(routes_static::serve_dir());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
-    println!("->> Listening on {addr}\n");
+    info!("{:<12} - {addr}\n", "LISTENING");
     axum_server::bind(addr)
         .serve(routes_all.into_make_service())
         .await

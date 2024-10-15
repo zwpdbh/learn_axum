@@ -1,6 +1,6 @@
 # Need `cargo install cargo-watch`
 run_server:
-	cargo watch -q -c -w src/ -x run 
+	cargo watch -q -c -w src/ -w .cargo/ -x run 
 
 run_client:
 	cargo watch -q -c -w examples/ -x "run --example quick_dev"
