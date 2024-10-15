@@ -60,7 +60,7 @@ pub async fn log_request(
         error_type,
         error_data,
     };
-    debug!("-- --> log_request: \n{}", json!(log_line));
+    debug!("REQUEST LOG LINE:\n{}", json!(log_line));
     // TODO - Send to cloudwatch service
 
     Ok(())
