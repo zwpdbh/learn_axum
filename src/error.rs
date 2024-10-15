@@ -6,6 +6,8 @@ pub type Result<T> = core::result::Result<T, Error>;
 pub enum Error {
     // -- Modules
     Model(model::Error),
+    // -- Config
+    ConfigMissingEnv(&'static str),
 }
 
 // region:    --- Froms

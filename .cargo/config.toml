@@ -3,3 +3,10 @@
 
 # Scope down tracing, to filter out external lib tracing 
 RUST_LOG = "learn_axum"
+
+# -- Service Environment Varaibles 
+# For cargo commands only
+# For deployed env, should managed by container
+
+## Config Map
+SERVICE_WEB_FOLDER = "web-folder/"
