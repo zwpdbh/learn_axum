@@ -1,9 +1,13 @@
+use super::store;
 use serde::Serialize;
 
 pub type Result<T> = core::result::Result<T, Error>;
 
 #[derive(Debug, Serialize)]
-pub enum Error {}
+pub enum Error {
+    // -- Modules
+    Store(store::Error),
+}
 
 // region:    --- Error Boilerplate
 impl core::fmt::Display for Error {
@@ -14,3 +18,9 @@ impl core::fmt::Display for Error {
 
 impl std::error::Error for Error {}
 // endregion: --- Error Boilerplate
+
+impl From<store::Error> for Error {
+    fn from(value: store::Error) -> Self {
+        Self::Store(value)
+    }
+}
