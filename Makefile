@@ -22,8 +22,8 @@ run_client:
 # Start postgresql server docker image:
 run_db_dev: 
 	docker run --rm --name pg -p 5432:5432 -e POSTGRES_PASSWORD=welcome postgres:16
-run_docker_file_for_dev:
-	
+run_db_dev_with_docker_compose:
+	sudo docker compose -f dockerfiles/docker-compose-for-dev.yaml up
 
 # (optional) To have a psql terminal on pg. 
 # In another terminal (tab) run psql:

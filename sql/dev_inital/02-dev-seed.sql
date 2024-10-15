@@ -1,4 +1,4 @@
-insert into
+INSERT INTO
   "user" (username)
-values
+VALUES
   ('demo1');

@@ -1,0 +1,29 @@
+# sudo docker compose -f dockerfiles/docker-compose-for-dev.yaml up
+services:
+  postgres:
+    image: postgres:16
+    container_name: pg
+    environment:
+      POSTGRES_PASSWORD: welcome
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres  # Optional: default database
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data  # Persist data across container restarts
+# visit http://localhost:3000/
+# Select and fill
+# System: PostgreSQL
+# Server: postgres 
+# Username: postgres 
+# Password: welcome 
+# Database: app_db 
+  adminer:
+    image: adminer
+    ports:
+      - 3000:8080
+    depends_on:
+      - postgres
+
+volumes:
+  pg_data:
