@@ -29,3 +29,20 @@ run_db_dev_with_docker_compose:
 # In another terminal (tab) run psql:
 run_psql_terminal:
 	docker exec -it -u postgres pg psql
+
+
+## Unit Test (watch)
+unit_test_watch: 
+	cargo watch -q -c -x "test -- --nocapture"
+
+# Specific test with filter.
+unit_test_watch_filter:
+ cargo watch -q -c -x "test test_create_ok -- --nocapture"
+
+
+## Unit Test
+unit_test:
+	cargo test -- --nocapture
+
+unit_test_filter:
+	cargo watch -q -c -x "test -p lib-core model::task::tests::test_create -- --nocapture"
