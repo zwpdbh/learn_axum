@@ -11,10 +11,10 @@ const PG_DEV_APP_URL: &str = "postgres://app_user:dev_only_pwd@localhost/app_db"
 const SQL_RECREATE_DB: &str = "sql/dev_inital/00-recreate-db.sql";
 const SQL_DIR: &str = "sql/dev_inital";
 
-pub async fn init_dev_db() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn init_dev_db(max_connection: u32) -> Result<(), Box<dyn std::error::Error>> {
     info!("{:<12} - init_dev_db()", "FOR-DEV-ONLY");
     {
-        let root_db = new_db_pool(PG_DEV_POSTGRES_URL).await?;
+        let root_db = new_db_pool_for_test(PG_DEV_POSTGRES_URL, max_connection).await?;
         let _ = pexec(&root_db, SQL_RECREATE_DB).await?;
     }
 
@@ -23,7 +23,7 @@ pub async fn init_dev_db() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
     let _ = paths.sort();
 
-    let app_db = new_db_pool(PG_DEV_APP_URL).await?;
+    let app_db = new_db_pool_for_test(PG_DEV_APP_URL, max_connection).await?;
     for path in paths {
         if let Some(path) = path.to_str() {
             let path = path.replace('\\', "/"); // for windows
@@ -50,9 +50,9 @@ async fn pexec(db: &Db, file: &str) -> Result<(), sqlx::Error> {
     Ok(())
 }
 
-async fn new_db_pool(db_con_url: &str) -> Result<Db, sqlx::Error> {
+async fn new_db_pool_for_test(db_con_url: &str, max_connection: u32) -> Result<Db, sqlx::Error> {
     PgPoolOptions::new()
-        .max_connections(1)
+        .max_connections(max_connection)
         .acquire_timeout(Duration::from_millis(500))
         .connect(db_con_url)
         .await

@@ -14,22 +14,22 @@ mod dev_db;
 
 /// Initialize environment for local development.
 /// (for early development, will be called from main())
-pub async fn init_dev() {
+pub async fn init_dev(max_connection: u32) {
     static INIT: OnceCell<()> = OnceCell::const_new();
     INIT.get_or_init(|| async {
         info!("{:<12} - init_dev_all()", "FOR-DEV-ONLY");
-        dev_db::init_dev_db().await.unwrap();
+        dev_db::init_dev_db(max_connection).await.unwrap();
     })
     .await;
 }
 
 /// Initialize test environment
-pub async fn init_test() -> ModelManager {
+pub async fn init_test(max_connection: u32) -> ModelManager {
     static INIT: OnceCell<ModelManager> = OnceCell::const_new();
 
     let mm = INIT
         .get_or_init(|| async {
-            init_dev().await;
+            init_dev(max_connection).await;
             ModelManager::new().await.unwrap()
         })
         .await;

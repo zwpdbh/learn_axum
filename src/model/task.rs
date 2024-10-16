@@ -85,7 +85,7 @@ mod tests {
     #[serial]
     #[tokio::test]
     async fn test_create_ok() -> Result<()> {
-        let mm = _dev_utils::init_test().await;
+        let mm = _dev_utils::init_test(1).await;
         let ctx = Ctx::root_ctx();
         let fx_title = "test_create_ok title";
 
@@ -107,7 +107,7 @@ mod tests {
     #[serial]
     #[tokio::test]
     async fn test_get_err_not_found() -> Result<()> {
-        let mm = _dev_utils::init_test().await;
+        let mm = _dev_utils::init_test(1).await;
         let ctx: Ctx = Ctx::root_ctx();
         let fix_id = 100;
 
@@ -129,7 +129,7 @@ mod tests {
     #[serial]
     #[tokio::test]
     async fn test_list_ok() -> Result<()> {
-        let mm = _dev_utils::init_test().await;
+        let mm = _dev_utils::init_test(1).await;
         let ctx = Ctx::root_ctx();
         let fx_titles = &["test_list_ok-task 01", "test_list_ok-task 02"];
         let _ = _dev_utils::seed_tasks(&ctx, &mm, fx_titles).await?;
@@ -155,7 +155,7 @@ mod tests {
     #[serial]
     #[tokio::test]
     async fn test_delete_err_not_found() -> Result<()> {
-        let mm = _dev_utils::init_test().await;
+        let mm = _dev_utils::init_test(1).await;
         let ctx: Ctx = Ctx::root_ctx();
         let fix_id = 100;
 
