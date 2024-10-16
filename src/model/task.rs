@@ -26,6 +26,7 @@ pub struct TaskForUpdate {
 
 // region:      --- TaskBmc (BackendModelController)
 pub struct TaskBmc;
+
 impl DbBmc for TaskBmc {
     const TABLE: &'static str = "task";
 }
@@ -43,7 +44,7 @@ impl TaskBmc {
     }
 
     pub async fn get(ctx: &Ctx, mm: &ModelManager, id: i64) -> Result<Task> {
-        base::get::<Self, _>(ctx, mm, id).await
+        base::get::<Self, Task>(ctx, mm, id).await
     }
 
     pub async fn list(_ctx: &Ctx, mm: &ModelManager) -> Result<Vec<Task>> {
