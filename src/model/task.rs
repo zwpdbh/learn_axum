@@ -48,6 +48,15 @@ impl TaskBmc {
         Ok(task)
     }
 
+    pub async fn list(_ctx: &Ctx, mm: &ModelManager) -> Result<Vec<Task>> {
+        let db = mm.db();
+        let tasks: Vec<Task> = sqlx::query_as("select * from task order by id")
+            .fetch_all(db)
+            .await?;
+
+        Ok(tasks)
+    }
+
     pub async fn delete(_ctx: &Ctx, mm: &ModelManager, id: i64) -> Result<()> {
         let db = mm.db();
         let count = sqlx::query("DELETE from  task where id = $1")
@@ -115,6 +124,32 @@ mod tests {
             ),
             "EntityNotFound not matching"
         );
+
+        Ok(())
+    }
+
+    #[serial]
+    #[tokio::test]
+    async fn test_list_ok() -> Result<()> {
+        let mm = _dev_utils::init_test().await;
+        let ctx = Ctx::root_ctx();
+        let fx_titles = &["test_list_ok-task 01", "test_list_ok-task 02"];
+        let _ = _dev_utils::seed_tasks(&ctx, &mm, fx_titles).await?;
+
+        // Exec
+        let tasks = TaskBmc::list(&ctx, &mm).await?;
+
+        // Check
+        let tasks: Vec<Task> = tasks
+            .into_iter()
+            .filter(|t| t.title.starts_with("test_list_ok-task"))
+            .collect();
+        assert_eq!(2, tasks.len(), "number of seed tasks");
+
+        // Clean
+        for task in tasks.iter() {
+            let _ = TaskBmc::delete(&ctx, &mm, task.id).await?;
+        }
 
         Ok(())
     }
