@@ -4,6 +4,8 @@ use crate::Ctx;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 
+use super::base::{self, DbBmc};
+
 // region:      --- Task Types
 #[derive(Debug, Clone, FromRow, Serialize)]
 pub struct Task {
@@ -24,6 +26,9 @@ pub struct TaskForUpdate {
 
 // region:      --- TaskBmc (BackendModelController)
 pub struct TaskBmc;
+impl DbBmc for TaskBmc {
+    const TABLE: &'static str = "task";
+}
 
 impl TaskBmc {
     pub async fn create(_ctx: &Ctx, mm: &ModelManager, task_c: TaskForCreate) -> Result<i64> {
@@ -37,15 +42,8 @@ impl TaskBmc {
         Ok(id)
     }
 
-    pub async fn get(_ctx: &Ctx, mm: &ModelManager, id: i64) -> Result<Task> {
-        let db = mm.db();
-        let task: Task = sqlx::query_as("select * from task where id = $1")
-            .bind(id)
-            .fetch_optional(db)
-            .await?
-            .ok_or(Error::EntityNotFound { entity: "task", id })?;
-
-        Ok(task)
+    pub async fn get(ctx: &Ctx, mm: &ModelManager, id: i64) -> Result<Task> {
+        base::get::<Self, _>(ctx, mm, id).await
     }
 
     pub async fn list(_ctx: &Ctx, mm: &ModelManager) -> Result<Vec<Task>> {
