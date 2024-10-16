@@ -47,6 +47,21 @@ impl TaskBmc {
 
         Ok(task)
     }
+
+    pub async fn delete(_ctx: &Ctx, mm: &ModelManager, id: i64) -> Result<()> {
+        let db = mm.db();
+        let count = sqlx::query("DELETE from  task where id = $1")
+            .bind(id)
+            .execute(db)
+            .await?
+            .rows_affected();
+
+        if count == 0 {
+            return Err(Error::EntityNotFound { entity: "task", id });
+        }
+
+        Ok(())
+    }
 }
 
 // endregion:   --- TaskBmc (BackendModelController)
@@ -73,20 +88,56 @@ mod tests {
 
         let id = TaskBmc::create(&ctx, &mm, task_c).await?;
 
-        let (title,): (String,) = sqlx::query_as("SELECT title from task where id = $1")
-            .bind(id)
-            .fetch_one(mm.db())
-            .await?;
+        // Check
+        let task = TaskBmc::get(&ctx, &mm, id).await?;
+        assert_eq!(task.title, fx_title);
 
-        assert_eq!(title, fx_title);
+        // Cleanup
+        TaskBmc::delete(&ctx, &mm, id).await?;
+        Ok(())
+    }
 
-        let count = sqlx::query("DELETE from task WHERE id = $1")
-            .bind(id)
-            .execute(mm.db())
-            .await?
-            .rows_affected();
+    #[serial]
+    #[tokio::test]
+    async fn test_get_err_not_found() -> Result<()> {
+        let mm = _dev_utils::init_test().await;
+        let ctx: Ctx = Ctx::root_ctx();
+        let fix_id = 100;
 
-        assert_eq!(1, count);
+        let res = TaskBmc::get(&ctx, &mm, fix_id).await;
+        assert!(
+            matches!(
+                res,
+                Err(Error::EntityNotFound {
+                    entity: "task",
+                    id: 100
+                })
+            ),
+            "EntityNotFound not matching"
+        );
+
+        Ok(())
+    }
+
+    #[serial]
+    #[tokio::test]
+    async fn test_delete_err_not_found() -> Result<()> {
+        let mm = _dev_utils::init_test().await;
+        let ctx: Ctx = Ctx::root_ctx();
+        let fix_id = 100;
+
+        let res = TaskBmc::get(&ctx, &mm, fix_id).await;
+        assert!(
+            matches!(
+                res,
+                Err(Error::EntityNotFound {
+                    entity: "task",
+                    id: 100
+                })
+            ),
+            "EntityNotFound not matching"
+        );
+
         Ok(())
     }
 }
