@@ -47,28 +47,42 @@ impl TaskBmc {
         base::get::<Self, _>(ctx, mm, id).await
     }
 
-    pub async fn list(_ctx: &Ctx, mm: &ModelManager) -> Result<Vec<Task>> {
+    pub async fn update(
+        _ctx: &Ctx,
+        mm: &ModelManager,
+        id: i64,
+        task_u: TaskForUpdate,
+    ) -> Result<()> {
         let db = mm.db();
-        let tasks: Vec<Task> = sqlx::query_as("select * from task order by id")
-            .fetch_all(db)
-            .await?;
 
-        Ok(tasks)
+        match task_u.title {
+            None => Ok(()),
+            Some(title) => {
+                let sql = format!("UPDATE task SET title = '{}' WHERE id = $1 ", title);
+                let count = sqlx::query(&sql)
+                    .bind(id)
+                    .execute(db)
+                    .await?
+                    .rows_affected();
+
+                if count == 0 {
+                    Err(Error::EntityNotFound {
+                        entity: Self::TABLE,
+                        id,
+                    })
+                } else {
+                    Ok(())
+                }
+            }
+        }
     }
 
-    pub async fn delete(_ctx: &Ctx, mm: &ModelManager, id: i64) -> Result<()> {
-        let db = mm.db();
-        let count = sqlx::query("DELETE from  task where id = $1")
-            .bind(id)
-            .execute(db)
-            .await?
-            .rows_affected();
+    pub async fn list(ctx: &Ctx, mm: &ModelManager) -> Result<Vec<Task>> {
+        base::list::<Self, _>(ctx, mm).await
+    }
 
-        if count == 0 {
-            return Err(Error::EntityNotFound { entity: "task", id });
-        }
-
-        Ok(())
+    pub async fn delete(ctx: &Ctx, mm: &ModelManager, id: i64) -> Result<()> {
+        base::delete::<Self>(ctx, mm, id).await
     }
 }
 
@@ -123,6 +137,35 @@ mod tests {
             ),
             "EntityNotFound not matching"
         );
+
+        Ok(())
+    }
+
+    #[serial]
+    #[tokio::test]
+    async fn test_update_ok() -> Result<()> {
+        let mm = _dev_utils::init_test(1).await;
+        let ctx = Ctx::root_ctx();
+        let fx_title = "test_update_ok - task 01";
+        let fx_title_new = "test_update_ok -- task 01 new";
+        let fx_task = _dev_utils::seed_tasks(&ctx, &mm, &[fx_title])
+            .await?
+            .remove(0);
+
+        // -- Exec
+        let _ = TaskBmc::update(
+            &ctx,
+            &mm,
+            fx_task.id,
+            TaskForUpdate {
+                title: Some(fx_title_new.to_string()),
+            },
+        )
+        .await?;
+
+        // -- Check
+        let task = TaskBmc::get(&ctx, &mm, fx_task.id).await?;
+        assert_eq!(task.title, "test_update_ok -- task 01 new");
 
         Ok(())
     }
