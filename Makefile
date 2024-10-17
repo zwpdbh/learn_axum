@@ -22,6 +22,7 @@ run_client:
 # Start postgresql server docker image:
 run_db_dev: 
 	docker run --rm --name pg -p 5432:5432 -e POSTGRES_PASSWORD=welcome postgres:16
+
 run_db_dev_with_docker_compose:
 	sudo docker compose -f dockerfiles/docker-compose-for-dev.yaml up
 
@@ -37,8 +38,7 @@ unit_test_watch:
 
 # Specific test with filter.
 unit_test_watch_filter:
- cargo watch -q -c -x "test test_create_ok -- --nocapture"
-
+	cargo watch -q -c -x "test test_create_ok -- --nocapture"
 
 ## Unit Test
 unit_test:
