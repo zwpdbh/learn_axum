@@ -10,6 +10,9 @@ RUST_LOG = "learn_axum"
 
 ## Secrete for k8s
 SERVICE_DB_URL = "postgres://app_user:dev_only_pwd@localhost/app_db"
+SERVICE_PWD_KEY = "P56x1MH6J-v0uVgHe_cjmZjI1_ddC_J2CFYZJbDAB_wzNm8o9sZWkZZHpfIdMnXlOPGt6YBNG1Sy0X2g1bqZEg"
+SERVICE_TOKEN_KEY = "Ao2Tti264QYXZN2bx0pkoj7yCrUQbnSxWjNOUCBIW9FTi5PdpkqkIYHJYkjxLxg5I39nlLgQrkk2tsbiTiKOug"
+SERVICE_TOKEN_DURATION_SEC = "1800"
 
 ## Config Map
 SERVICE_WEB_FOLDER = "web-folder/"
