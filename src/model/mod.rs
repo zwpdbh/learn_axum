@@ -22,6 +22,7 @@ mod base;
 mod error;
 mod store;
 pub mod task;
+mod user;
 
 pub use self::error::{Error, Result};
 
