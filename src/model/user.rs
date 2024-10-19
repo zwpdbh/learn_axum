@@ -1,3 +1,4 @@
+use crate::crypt::{pwd, EncryptContent};
 use crate::ctx::Ctx;
 use crate::model::base::{self, DbBmc};
 use crate::model::ModelManager;
@@ -35,7 +36,7 @@ pub struct UserForLogin {
 
     // pwd and token info
     pub pwd: Option<String>, // encrypted
-    pub pwd_sualt: Uuid,
+    pub pwd_salt: Uuid,
     pub token_salt: Uuid,
 }
 
@@ -87,6 +88,24 @@ impl UserBmc {
             .fetch_optional(db)
             .await?;
         Ok(user)
+    }
+
+    pub async fn update_pwd(ctx: &Ctx, mm: &ModelManager, id: i64, pwd_clear: &str) -> Result<()> {
+        let db = mm.db();
+        let user: UserForLogin = Self::get(ctx, mm, id).await?;
+        let pwd = pwd::encrypt_pwd(&EncryptContent {
+            content: pwd_clear.to_string(),
+            salt: user.pwd_salt.to_string(),
+        })?;
+
+        let sql = format!(r#"update {} set pwd = $1 where id = $2"#, Self::TABLE);
+        let _ = sqlx::query(&sql)
+            .bind(pwd_clear)
+            .bind(id)
+            .execute(db)
+            .await?;
+
+        Ok(())
     }
 }
 

@@ -1,5 +1,7 @@
 use std::{fs, path::PathBuf, time::Duration};
 
+use crate::model::user::{User, UserBmc};
+use crate::{model::ModelManager, Ctx};
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 use tracing::info;
 
@@ -10,6 +12,8 @@ const PG_DEV_APP_URL: &str = "postgres://app_user:dev_only_pwd@localhost/app_db"
 
 const SQL_RECREATE_DB: &str = "sql/dev_inital/00-recreate-db.sql";
 const SQL_DIR: &str = "sql/dev_inital";
+
+const DEMO_PWD: &str = "welcome";
 
 pub async fn init_dev_db(max_connection: u32) -> Result<(), Box<dyn std::error::Error>> {
     info!("{:<12} - init_dev_db()", "FOR-DEV-ONLY");
@@ -23,6 +27,7 @@ pub async fn init_dev_db(max_connection: u32) -> Result<(), Box<dyn std::error::
         .collect();
     let _ = paths.sort();
 
+    // sql execute each file
     let app_db = new_db_pool_for_test(PG_DEV_APP_URL, max_connection).await?;
     for path in paths {
         if let Some(path) = path.to_str() {
@@ -33,6 +38,17 @@ pub async fn init_dev_db(max_connection: u32) -> Result<(), Box<dyn std::error::
             }
         }
     }
+
+    // init model layer
+    let mm = ModelManager::new().await?;
+    let ctx = Ctx::root_ctx();
+
+    let demo1_user: User = UserBmc::first_by_username(&ctx, &mm, "demo1")
+        .await?
+        .unwrap();
+
+    let _ = UserBmc::update_pwd(&ctx, &mm, demo1_user.id, DEMO_PWD).await?;
+    info!("{:<12} - init_dev_db - set demo1 pwd", "FOR-DEV-ONLY");
 
     Ok(())
 }
