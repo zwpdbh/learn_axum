@@ -102,11 +102,7 @@ impl UserBmc {
         })?;
 
         let sql = format!(r#"update "{}" set pwd = $1 where id = $2"#, Self::TABLE);
-        let _ = sqlx::query(&sql)
-            .bind(pwd_clear)
-            .bind(id)
-            .execute(db)
-            .await?;
+        let _ = sqlx::query(&sql).bind(pwd).bind(id).execute(db).await?;
 
         Ok(())
     }

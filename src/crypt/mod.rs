@@ -4,6 +4,7 @@ pub use self::error::{Error, Result};
 
 use hmac::{Hmac, Mac};
 use sha2::Sha512;
+use tracing::info;
 // endregion:   --- Modules
 
 pub struct EncryptContent {
@@ -24,7 +25,6 @@ pub fn encrypt_into_b64url(key: &[u8], enc_content: &EncryptContent) -> Result<S
     let hmac_result = hmac_sha512.finalize();
     let result_bytes = hmac_result.into_bytes();
     let result = base64_url::encode(&result_bytes);
-
     Ok(result)
 }
 
