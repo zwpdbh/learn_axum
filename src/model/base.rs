@@ -14,7 +14,7 @@ where
     E: for<'r> FromRow<'r, PgRow> + Unpin + Send,
 {
     let db = mm.db();
-    let sql = format!("select * from {} where id = $1", MC::TABLE);
+    let sql = format!(r#"select * from "{}" where id = $1"#, MC::TABLE);
 
     let entity: E = sqlx::query_as(&sql)
         .bind(id)
@@ -34,7 +34,7 @@ where
     E: for<'r> FromRow<'r, PgRow> + Unpin + Send,
 {
     let db = mm.db();
-    let sql = format!("select * from {} order by id", MC::TABLE);
+    let sql = format!(r#"select * from "{}" order by id"#, MC::TABLE);
     let entities: Vec<E> = sqlx::query_as(&sql).fetch_all(db).await?;
 
     Ok(entities)
@@ -45,7 +45,7 @@ where
     MC: DbBmc,
 {
     let db = mm.db();
-    let sql = format!("DELETE from {} where id = $1", MC::TABLE);
+    let sql = format!(r#"DELETE from "{}" where id = $1"#, MC::TABLE);
     let count = sqlx::query(&sql)
         .bind(id)
         .execute(db)

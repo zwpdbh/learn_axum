@@ -46,7 +46,10 @@ pub async fn init_dev_db(max_connection: u32) -> Result<(), Box<dyn std::error::
     let demo1_user: User = UserBmc::first_by_username(&ctx, &mm, "demo1")
         .await?
         .unwrap();
-
+    info!(
+        "{:<12} - init_dev_db - after get demo1_user, user: {demo1_user:?}",
+        "FOR-DEV-ONLY",
+    );
     let _ = UserBmc::update_pwd(&ctx, &mm, demo1_user.id, DEMO_PWD).await?;
     info!("{:<12} - init_dev_db - set demo1 pwd", "FOR-DEV-ONLY");
 

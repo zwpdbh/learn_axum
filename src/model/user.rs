@@ -6,6 +6,7 @@ use crate::model::{Error, Result};
 use serde::{Deserialize, Serialize};
 use sqlx::postgres::PgRow;
 use sqlx::FromRow;
+use tracing::info;
 use uuid::Uuid;
 
 // region:      --- User Types
@@ -93,12 +94,14 @@ impl UserBmc {
     pub async fn update_pwd(ctx: &Ctx, mm: &ModelManager, id: i64, pwd_clear: &str) -> Result<()> {
         let db = mm.db();
         let user: UserForLogin = Self::get(ctx, mm, id).await?;
+        info!("{:<12} - update_pwd - for user: {user:?}", "PREFIX");
+
         let pwd = pwd::encrypt_pwd(&EncryptContent {
             content: pwd_clear.to_string(),
             salt: user.pwd_salt.to_string(),
         })?;
 
-        let sql = format!(r#"update {} set pwd = $1 where id = $2"#, Self::TABLE);
+        let sql = format!(r#"update "{}" set pwd = $1 where id = $2"#, Self::TABLE);
         let _ = sqlx::query(&sql)
             .bind(pwd_clear)
             .bind(id)
