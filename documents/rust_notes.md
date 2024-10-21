@@ -22,7 +22,7 @@ the question mark operation (`?`) implicitly performs a conversion on the error 
 the following other types implement trait `From<T>`:
   <model::error::Error as From<sqlx::Error>>
   <model::error::Error as From<store::error::Error>>
-required for `std::result::Result<(), model::error::Error>` to implement 
+required for `std::result::Result<(), model::error::Error>` to implement `FromResidual<std::result::Result<Infallible, crypt::error::Error>>`
 ```
 
 - Currently, the `model::error::Error` is defined as:
