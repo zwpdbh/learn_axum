@@ -41,7 +41,7 @@ async fn main() -> Result<()> {
     //   .route_layer(middleware::from_fn(mw_ctx_require));
 
     let routes_all = Router::new()
-        .merge(web::routes_login::routes())
+        .merge(web::routes_login::routes(mm.clone()))
         .layer(middleware::map_response(mw_reponse_map))
         .layer(middleware::from_fn_with_state(
             mm.clone(),
