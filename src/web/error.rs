@@ -9,7 +9,6 @@ pub type Result<T> = core::result::Result<T, Error>;
 #[serde(tag = "type", content = "data")]
 pub enum Error {
     // -- Login
-    LoginFail,
     LoginFailUserNameNotFound,
     LoginFailUserHasNoPwd { user_id: i64 },
     LoginFailPwdNotMatching { user_id: i64 },
@@ -62,9 +61,12 @@ impl Error {
 
         #[allow(unreachable_patterns)]
         match self {
-            // -- Login/Auth
+            // -- Login
+            LoginFailUserNameNotFound
+            | LoginFailUserHasNoPwd { .. }
+            | LoginFailPwdNotMatching { .. } => (StatusCode::FORBIDDEN, ClientError::LOGIN_FAIL),
+            // -- Auth
             CtxExt(_) => (StatusCode::FORBIDDEN, ClientError::NO_AUTH),
-
             // -- Fallback.
             _ => (
                 StatusCode::INTERNAL_SERVER_ERROR,
