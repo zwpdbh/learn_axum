@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::ctx::Ctx;
 use crate::log::log_request;
 use crate::web;
@@ -6,6 +8,7 @@ use axum::response::{IntoResponse, Response};
 use axum::Json;
 use serde_json::json;
 use tracing::debug;
+use tracing_subscriber::field::debug;
 use uuid::Uuid;
 pub async fn mw_reponse_map(
     ctx: Option<Ctx>,
@@ -17,7 +20,8 @@ pub async fn mw_reponse_map(
     let uuid = Uuid::new_v4();
 
     // -- Get the eventual response error.
-    let web_error = res.extensions().get::<web::Error>();
+    // let web_error = res.extensions().get::<web::Error>();
+    let web_error = res.extensions().get::<Arc<web::Error>>().map(Arc::as_ref);
     let client_status_error = web_error.map(|se| se.client_status_and_error());
 
     // -- If client error, build the new reponse.
@@ -43,6 +47,5 @@ pub async fn mw_reponse_map(
     let _ = log_request(uuid, req_method, uri, ctx, web_error, client_error).await;
 
     debug!("\n");
-
-    error_response.unwrap_or(res)
+    error_response.unwrap()
 }
