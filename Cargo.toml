@@ -23,6 +23,7 @@ sqlx = { version = "0.8.2", features = [
   "uuid",
   "time",
 ] }
+time = { version = "0.3" }
 # -- Crypt & Encoding 
 rand = "0.8"
 hmac = "0.12"

@@ -7,8 +7,8 @@ mod ctx;
 mod error;
 mod log;
 mod model;
+mod utils;
 mod web;
-
 pub use self::ctx::Ctx;
 pub use self::error::{Error, Result};
 pub use config::config;
