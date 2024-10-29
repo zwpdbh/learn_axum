@@ -108,3 +108,28 @@ fn _token_sign_into_b64u(ident: &str, exp: &str, salt: &str, key: &[u8]) -> Resu
 }
 
 // endregion:   --- (private) Token Gen and Validation
+
+// region:      --- Tests
+
+//  cargo test --package learn_axum --bin learn_axum -- crypt::token::tests --show-output
+#[cfg(test)]
+mod tests {
+    #![allow(unused)]
+    use super::*;
+    use anyhow::{Ok, Result};
+
+    #[test]
+    fn test_token_display_ok() -> Result<()> {
+        let fx_token_str = "ZngtaWRlbnQtMDE.MjAyNC0wNi0xN1QxNTozMDowMFo.some-sign-b64u-encoded";
+        let fx_token = Token {
+            ident: "fx-ident-01".to_string(),
+            exp: "2024-06-17T15:30:00Z".to_string(),
+            sign_b64u: "some-sign-b64u-encoded".to_string(),
+        };
+
+        assert_eq!(fx_token_str, fx_token.to_string());
+        Ok(())
+    }
+}
+
+// endregion:   --- Tests
