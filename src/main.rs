@@ -45,7 +45,7 @@ async fn main() -> Result<()> {
         .layer(middleware::map_response(mw_reponse_map))
         .layer(middleware::from_fn_with_state(
             mm.clone(),
-            web::mw_auth::mw_ctx_resolver,
+            web::mw_auth::mw_ctx_resolve,
         ))
         .layer(CookieManagerLayer::new())
         .fallback_service(routes_static::serve_dir());

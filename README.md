@@ -7,4 +7,5 @@
   - 2:13:26- with user password feature is ready, we are ready to do web login.
   - 2:22:19 -- with user login feature is ready, we will need to implement secure token and web auth.
     - Create token(cookie: auth-token, HttpOnly) has 3 parts: `identifier_b64u`, `experation_b64u`, and `signature_b64u`
+  - 2:56:30 -- CTX extractor
 - [Burn - Deep Learning Framework for Rust](https://www.youtube.com/watch?v=F-MNJU5Vn8A&t=43s)

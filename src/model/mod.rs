@@ -25,6 +25,7 @@ pub mod task;
 pub mod user;
 
 pub use self::error::{Error, Result};
+pub use user::{User, UserBmc, UserForAuth};
 
 use store::{new_db_pool, Db};
 

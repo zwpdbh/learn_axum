@@ -2,7 +2,7 @@ mod error;
 pub use self::error::{Error, Result};
 
 // used by both web layer and model layer
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Ctx {
     user_id: u64,
 }
