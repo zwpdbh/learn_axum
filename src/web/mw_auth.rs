@@ -12,6 +12,7 @@ use axum::http::Request;
 use axum::middleware::Next;
 use axum::response::Response;
 use serde::Serialize;
+use std::sync::Arc;
 use tower_cookies::{Cookie, Cookies};
 use tracing::debug;
 

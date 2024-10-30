@@ -47,5 +47,6 @@ pub async fn mw_reponse_map(
     let _ = log_request(uuid, req_method, uri, ctx, web_error, client_error).await;
 
     debug!("\n");
-    error_response.unwrap()
+
+    error_response.unwrap_or(res)
 }

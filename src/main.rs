@@ -11,7 +11,10 @@ mod utils;
 mod web;
 pub use self::ctx::Ctx;
 pub use self::error::{Error, Result};
+use axum::response::Html;
+use axum::routing::get;
 pub use config::config;
+use web::mw_auth::mw_require_auth;
 
 use crate::model::ModelManager;
 use crate::web::mw_res_map::mw_reponse_map;
@@ -40,8 +43,13 @@ async fn main() -> Result<()> {
     // let routes_rpc = rpc::routes(mm.clone())
     //   .route_layer(middleware::from_fn(mw_ctx_require));
 
+    let routes_hello = Router::new()
+        .route("/hello", get(|| async { Html("Hello world") }))
+        .route_layer(middleware::from_fn(mw_require_auth));
+
     let routes_all = Router::new()
         .merge(web::routes_login::routes(mm.clone()))
+        .merge(routes_hello)
         .layer(middleware::map_response(mw_reponse_map))
         .layer(middleware::from_fn_with_state(
             mm.clone(),
