@@ -52,8 +52,8 @@ async fn api_login_handler(
     )
     .map_err(|_| Error::LoginFailPwdNotMatching { user_id })?;
 
-    // FIXME: Implement real auth-token generation.
-    cookies.add(Cookie::new(web::AUTH_TOKEN, "user-1.exp.sign"));
+    // -- Set web token
+    let _ = web::set_token_cookie(&cookies, &user.username, &user.token_salt.to_string())?;
 
     let body = Json(json!({
         "result": {

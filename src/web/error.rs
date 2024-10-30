@@ -1,4 +1,4 @@
-use crate::{model, web};
+use crate::{crypt, model, web};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use serde::Serialize;
@@ -18,11 +18,18 @@ pub enum Error {
 
     // -- Modules
     Model(model::Error),
+    Crypt(crypt::Error),
 }
 
 impl From<model::Error> for Error {
     fn from(value: model::Error) -> Self {
         Self::Model(value)
+    }
+}
+
+impl From<crypt::Error> for Error {
+    fn from(value: crypt::Error) -> Self {
+        Self::Crypt(value)
     }
 }
 

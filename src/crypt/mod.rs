@@ -3,6 +3,7 @@ mod token;
 
 pub mod pwd;
 pub use self::error::{Error, Result};
+pub use token::generate_web_token;
 
 use hmac::{Hmac, Mac};
 use sha2::Sha512;
