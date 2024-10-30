@@ -7,7 +7,7 @@ pub enum Error {
     KeyFailHmac,
     PwdNotMatching,
 
-    TokenINvalidFormat,
+    TokenInvalidFormat,
     TokenCannotDecodeIdent,
     TokenCannotDecodeExp,
     TokenSignatureNotMatching,

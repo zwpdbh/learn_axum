@@ -6,6 +6,8 @@ use crate::utils::{b64u_decode, b64u_encode, now_utc, now_utc_plus_sec_str, pars
 use crate::{config, utils};
 
 // region:      --- Token Type
+
+#[derive(Debug)]
 pub struct Token {
     pub ident: String,     // identifier
     pub exp: String,       // Expiration data in RFC3339
@@ -24,12 +26,13 @@ impl fmt::Display for Token {
     }
 }
 
+/// For feature: let token: Token = fx_token_str.parse()?;
 impl FromStr for Token {
     type Err = Error;
     fn from_str(token_str: &str) -> std::result::Result<Self, Self::Err> {
         let splits: Vec<&str> = token_str.split('.').collect();
         if splits.len() != 3 {
-            return Err(Error::TokenINvalidFormat);
+            return Err(Error::TokenInvalidFormat);
         }
 
         let (ident_b64u, exp_b64u, sign_b64u) = (splits[0], splits[1], splits[2]);
@@ -128,6 +131,21 @@ mod tests {
         };
 
         assert_eq!(fx_token_str, fx_token.to_string());
+        Ok(())
+    }
+
+    #[test]
+    fn test_token_from_str_ok() -> Result<()> {
+        let fx_token_str = "ZngtaWRlbnQtMDE.MjAyNC0wNi0xN1QxNTozMDowMFo.some-sign-b64u-encoded";
+        let fx_token = Token {
+            ident: "fx-ident-01".to_string(),
+            exp: "2024-06-17T15:30:00Z".to_string(),
+            sign_b64u: "some-sign-b64u-encoded".to_string(),
+        };
+        let token: Token = fx_token_str.parse()?;
+
+        assert_eq!(format!("{fx_token:?}"), format!("{token:?}"));
+
         Ok(())
     }
 }
