@@ -17,7 +17,7 @@ use crate::{
 pub fn routes(mm: ModelManager) -> Router {
     Router::new()
         .route("/api/login", post(api_login_handler))
-        .route("/api/logff", post(api_logoff_handler))
+        .route("/api/logoff", post(api_logoff_handler))
         .with_state(mm)
 }
 
@@ -81,6 +81,7 @@ struct LogoffPayload {
 }
 
 async fn api_logoff_handler(
+    _mm: State<ModelManager>,
     cookies: Cookies,
     Json(payload): Json<LogoffPayload>,
 ) -> Result<Json<Value>> {
