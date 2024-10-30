@@ -1,7 +1,7 @@
 use std::fmt;
 use std::str::FromStr;
 
-use crate::crypt::{encrypt_into_b64url, EncryptContent, Error, Result};
+use crate::crypt::{encrypt_into_b64u, EncryptContent, Error, Result};
 use crate::utils::{b64u_decode, b64u_encode, now_utc, now_utc_plus_sec_str, parse_utc};
 use crate::{config, utils};
 
@@ -99,7 +99,7 @@ fn _token_sign_into_b64u(ident: &str, exp: &str, salt: &str, key: &[u8]) -> Resu
     let content = format!("{}.{}", b64u_encode(ident), b64u_encode(exp));
 
     // can also use sha512pass without the hash mark
-    let signature = encrypt_into_b64url(
+    let signature = encrypt_into_b64u(
         key,
         &EncryptContent {
             content,
@@ -118,6 +118,8 @@ fn _token_sign_into_b64u(ident: &str, exp: &str, salt: &str, key: &[u8]) -> Resu
 #[cfg(test)]
 mod tests {
     #![allow(unused)]
+    use std::{thread, time::Duration};
+
     use super::*;
     use anyhow::{Ok, Result};
 
@@ -145,6 +147,42 @@ mod tests {
         let token: Token = fx_token_str.parse()?;
 
         assert_eq!(format!("{fx_token:?}"), format!("{token:?}"));
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_validate_web_token_err_expired() -> Result<()> {
+        let fx_user = "user_one";
+        let fx_salt = "pepper";
+        let fx_duration_sec = 0.01;
+        let token_key = &config().TOKEN_KEY;
+
+        let fix_token = _generate_token(&fx_user, fx_duration_sec, &fx_salt, &token_key)?;
+
+        // -- Exec
+        thread::sleep(Duration::from_millis(20));
+        let res = validate_web_token(&fix_token, &fx_salt);
+        assert!(
+            matches!(res, Err(Error::TokenExpired)),
+            "Should have matched, but it is `{res:?}`"
+        );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_validate_web_token_ok() -> Result<()> {
+        let fx_user = "user_one";
+        let fx_salt = "pepper";
+        let fx_duration_sec = 0.02;
+        let token_key = &config().TOKEN_KEY;
+
+        let fix_token = _generate_token(&fx_user, fx_duration_sec, &fx_salt, &token_key)?;
+
+        // -- Exec
+        thread::sleep(Duration::from_millis(10));
+        let () = validate_web_token(&fix_token, &fx_salt)?;
 
         Ok(())
     }

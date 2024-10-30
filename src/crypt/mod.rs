@@ -14,7 +14,7 @@ pub struct EncryptContent {
     pub salt: String,    // Clear salt
 }
 
-pub fn encrypt_into_b64url(key: &[u8], enc_content: &EncryptContent) -> Result<String> {
+pub fn encrypt_into_b64u(key: &[u8], enc_content: &EncryptContent) -> Result<String> {
     let EncryptContent { content, salt } = enc_content;
     // Create a HMAC-SHA-512 from key
     let mut hmac_sha512 = Hmac::<Sha512>::new_from_slice(key).map_err(|_| Error::KeyFailHmac)?;
@@ -38,7 +38,7 @@ mod tests {
     use rand::RngCore;
 
     #[test]
-    fn test_encrypt_into_base64url_ok() -> Result<()> {
+    fn test_encrypt_into_base64u_ok() -> Result<()> {
         // setup fixture
         let mut fx_key = [0u8; 64]; // 512 bits = 64 bytes
         let _ = rand::thread_rng().fill_bytes(&mut fx_key);
@@ -48,10 +48,10 @@ mod tests {
         };
 
         // TODO: Need to fix fx_key, and precompute fx_res.
-        let fx_res = encrypt_into_b64url(&fx_key, &fx_enc_content)?;
+        let fx_res = encrypt_into_b64u(&fx_key, &fx_enc_content)?;
 
         // Exec
-        let res = encrypt_into_b64url(&fx_key, &fx_enc_content)?;
+        let res = encrypt_into_b64u(&fx_key, &fx_enc_content)?;
         println!("->> {res}");
 
         assert_eq!(res, fx_res);
