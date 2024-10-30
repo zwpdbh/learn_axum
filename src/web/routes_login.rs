@@ -10,16 +10,18 @@ use crate::{
         user::{self, UserBmc, UserForLogin},
         ModelManager,
     },
-    web::{self, Error, Result},
+    web::{self, remove_token_cookie, Error, Result},
     Ctx,
 };
 
 pub fn routes(mm: ModelManager) -> Router {
     Router::new()
         .route("/api/login", post(api_login_handler))
+        .route("/api/logff", post(api_logoff_handler))
         .with_state(mm)
 }
 
+// region:      --- Login
 async fn api_login_handler(
     State(mm): State<ModelManager>,
     cookies: Cookies,
@@ -69,3 +71,31 @@ struct LoginPayload {
     username: String,
     pwd: String,
 }
+
+// endregion:   --- Login
+
+// region:      --- LogOff
+#[derive(Debug, Deserialize)]
+struct LogoffPayload {
+    logoff: bool,
+}
+
+async fn api_logoff_handler(
+    cookies: Cookies,
+    Json(payload): Json<LogoffPayload>,
+) -> Result<Json<Value>> {
+    debug!("{:<12} - api_logoff_handler", "HANDLER");
+    let should_logoff = payload.logoff;
+    if should_logoff {
+        remove_token_cookie(&cookies)?;
+    }
+    let body = Json(json!({
+        "result": {
+            "logged_off": should_logoff
+        }
+    }));
+
+    Ok(body)
+}
+
+// endregion:   --- LogOff

@@ -20,6 +20,7 @@ pub async fn mw_reponse_map(
     let uuid = Uuid::new_v4();
 
     // -- Get the eventual response error.
+    // MUST match the type from `impl IntoResponse for Error`
     // let web_error = res.extensions().get::<web::Error>();
     let web_error = res.extensions().get::<Arc<web::Error>>().map(Arc::as_ref);
     let client_status_error = web_error.map(|se| se.client_status_and_error());
