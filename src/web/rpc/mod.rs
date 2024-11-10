@@ -51,12 +51,28 @@ pub fn routes(mm: ModelManager) -> Router {
         .with_state(mm)
 }
 
+/// PRC basic infomration holding the id and the method for further logging
+#[derive(Debug, Clone)]
+pub struct RpcInfo {
+    pub id: Option<Value>,
+    pub method: String,
+}
+
 async fn rpc_handler(
     State(mm): State<ModelManager>,
     ctx: Ctx,
     Json(rpc_req): Json<RpcRequest>,
 ) -> Response {
-    _rpc_handler(ctx, mm, rpc_req).await.into_response()
+    // -- Create the RpcInfo to be set to the response.extensions
+    let rpc_info = RpcInfo {
+        id: rpc_req.id.clone(),
+        method: rpc_req.method.clone(),
+    };
+    // -- Exec & Store RpcInfo in response
+    let mut res = _rpc_handler(ctx, mm, rpc_req).await.into_response();
+    res.extensions_mut().insert(rpc_info);
+
+    res
 }
 
 macro_rules! exec_rpc_fn {
