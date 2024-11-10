@@ -23,7 +23,7 @@ pub async fn list_tasks(ctx: Ctx, mm: ModelManager) -> Result<Vec<Task>> {
     Ok(tasks)
 }
 
-pub async fn update_tasks(
+pub async fn update_task(
     ctx: Ctx,
     mm: ModelManager,
     params: ParamsForUpdate<TaskForUpdate>,

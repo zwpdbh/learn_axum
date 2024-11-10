@@ -34,6 +34,33 @@ async fn main() -> Result<()> {
     );
     let _ = req_create_task.await?.print().await?;
 
+    let req_update_task = hc.do_post(
+        "/api/rpc",
+        json!({
+            "id": 1,
+            "method": "update_task",
+            "params": {
+                "id": 1000,
+                "data": {
+                    "title": "task AAA updated"
+                }
+            }
+        }),
+    );
+    let _ = req_update_task.await?.print().await?;
+
+    let req_delete_task = hc.do_post(
+        "/api/rpc",
+        json!({
+            "id": 1,
+            "method": "delete_task",
+            "params": {
+                "id": 1000
+            }
+        }),
+    );
+    let _ = req_delete_task.await?.print().await?;
+
     let req_list_tasks = hc.do_post(
         "/api/rpc",
         json!({
