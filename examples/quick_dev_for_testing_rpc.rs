@@ -19,6 +19,21 @@ async fn main() -> Result<()> {
     req_login.await?.print().await?;
 
     // region:      --- Test RPC api for Task
+
+    let req_create_task = hc.do_post(
+        "/api/rpc",
+        json!({
+            "id": 1,
+            "method": "create_task",
+            "params": {
+                "data": {
+                    "title": "task AAA"
+                }
+            }
+        }),
+    );
+    let _ = req_create_task.await?.print().await?;
+
     let req_list_tasks = hc.do_post(
         "/api/rpc",
         json!({
@@ -29,14 +44,6 @@ async fn main() -> Result<()> {
     let _ = req_list_tasks.await?.print().await?;
 
     // endregion:   --- Test RPC api for Task
-
-    let req_logoff = hc.do_post(
-        "/api/logoff",
-        json!({
-            "logoff": true
-        }),
-    );
-    req_logoff.await?.print().await?;
 
     Ok(())
 }

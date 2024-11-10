@@ -11,8 +11,8 @@ use axum::{extract::State, Router};
 use axum::{response::IntoResponse, Json};
 use axum::{response::Response, routing::post};
 use serde::Deserialize;
-use serde_json::{json, to_value, Value};
-use task_rpc::list_tasks;
+use serde_json::{from_value, json, to_value, Value};
+use task_rpc::{create_task, list_tasks};
 use tracing::debug;
 
 // endregion:   --- Modules
@@ -68,7 +68,16 @@ async fn _rpc_handler(ctx: Ctx, mm: ModelManager, rpc_req: RpcRequest) -> Result
 
     debug!("{:<12} - _rpc_handler - method: {rpc_method}", "HANDLER");
     let result_json: Value = match rpc_method.as_str() {
-        "create_task" => todo!(),
+        "create_task" => {
+            let params = rpc_params.ok_or(Error::RpcMissParams {
+                prc_method: "create_task".to_string(),
+            })?;
+            let params = from_value(params).map_err(|_| Error::RpcFailJsonParams {
+                rpc_method: "create_task".to_string(),
+            })?;
+            let r = create_task(ctx, mm, params).await.map(to_value)??;
+            r
+        }
         "list_tasks" => {
             let r = list_tasks(ctx, mm).await.map(|r| to_value(r))??;
             r
