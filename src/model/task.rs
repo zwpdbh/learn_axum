@@ -25,6 +25,11 @@ pub struct TaskForUpdate {
 // endregion:   --- Task Types
 
 // region:      --- TaskBmc (BackendModelController)
+
+/// All hard works are done here for different business logic.
+/// Then, it is used cross different other modules. Such as in RPC module.
+/// Think of this is consisted of basic business operations.
+/// Then, other module could use those operations to implement their own business logic.
 pub struct TaskBmc;
 
 impl DbBmc for TaskBmc {
