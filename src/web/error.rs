@@ -88,6 +88,11 @@ impl Error {
             | LoginFailPwdNotMatching { .. } => (StatusCode::FORBIDDEN, ClientError::LOGIN_FAIL),
             // -- Auth
             CtxExt(_) => (StatusCode::FORBIDDEN, ClientError::NO_AUTH),
+            // -- Model
+            Model(model::Error::EntityNotFound { entity, id }) => (
+                StatusCode::BAD_REQUEST,
+                ClientError::ENTITY_NOT_FOUND { entity, id: *id },
+            ),
             // -- Fallback.
             _ => (
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -97,11 +102,13 @@ impl Error {
     }
 }
 
-#[derive(Debug, strum_macros::AsRefStr)]
+#[derive(Debug, strum_macros::AsRefStr, Serialize)]
+#[serde(tag = "message", content = "detail")]
 #[allow(non_camel_case_types)]
 pub enum ClientError {
     LOGIN_FAIL,
     NO_AUTH,
+    ENTITY_NOT_FOUND { entity: &'static str, id: i64 },
     SERVICE_ERROR,
 }
 // endregion: --- Client Error
