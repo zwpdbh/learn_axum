@@ -4,11 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "^1.4", features = ["full"] }
 axum = { version = "0.7" }
 axum-macros = { version = "0.4.2" }
 axum-server = { version = "0.7.0" }
-serde = { version = "1", features = ["derive"] }
+serde = { version = "^1", features = ["derive"] }
 serde_json = "^1.0"
 serde_with = "3"
 tower-http = { version = "0.6", features = ["fs"] }
@@ -23,6 +23,13 @@ sqlx = { version = "0.8.2", features = [
   "uuid",
   "time",
 ] }
+
+sea-query = { version = "^0.3" }
+sea-query-binder = { version = "^0.7", features = [
+  "with-uuid",
+  "sqlx-postgres",
+] }
+
 time = { version = "0.3" }
 # -- Crypt & Encoding 
 rand = "0.8"
@@ -35,6 +42,6 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
-anyhow = "1"
+anyhow = "^1"
 httpc-test = { version = "0.1.1" }
-serial_test = "3"
+serial_test = "^3"

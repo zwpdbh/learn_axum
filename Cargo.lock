@@ -1001,6 +1001,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "inherent"
+version = "1.0.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0122b7114117e64a63ac49f752a5ca4624d534c7b1c7de796ac196381cd2d947"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "ipnet"
 version = "2.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1067,6 +1078,8 @@ dependencies = [
  "httpc-test",
  "lazy-regex",
  "rand",
+ "sea-query 0.3.0",
+ "sea-query-binder",
  "serde",
  "serde_json",
  "serde_with",
@@ -1789,6 +1802,36 @@ name = "sdd"
 version = "3.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49c1eeaf4b6a87c7479688c6d52b9f1153cedd3c489300564f932b065c6eab95"
+
+[[package]]
+name = "sea-query"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef1a8990abf48037ff5a1769c5d8386e907200c30764faa16a707ddd393d412c"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
+name = "sea-query"
+version = "0.32.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff504d13b5e4b52fffcf2fb203d0352a5722fa5151696db768933e41e1e591bb"
+dependencies = [
+ "inherent",
+ "uuid",
+]
+
+[[package]]
+name = "sea-query-binder"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0019f47430f7995af63deda77e238c17323359af241233ec768aba1faea7608"
+dependencies = [
+ "sea-query 0.32.0",
+ "sqlx",
+ "uuid",
+]
 
 [[package]]
 name = "security-framework"
